@@ -1,0 +1,10 @@
+{
+  "name": "misar-dev",
+  "description": "Complete AI-powered codebase audit suite — 12 categories + 3D Router. Dynamic 3-dimensional routing (model×effort×version) across haiku/sonnet/opus × low/med/high/max × 4.5/4.6 + parallel subagent dispatch for 90-97% token savings and 2-5x speed.",
+  "version": "7.5.0",
+  "author": {
+    "name": "Misar.Dev",
+    "email": "hello@misar.dev",
+    "url": "https://misar.dev"
+  }
+}

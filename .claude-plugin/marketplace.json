@@ -1,0 +1,23 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "misar-ai-plugins",
+  "description": "Open-source Claude Code plugins by Misar AI — 12-category codebase audit suite with dynamic model routing (opus/sonnet/haiku). Covers QA, Testing, Security, Product, Marketing, UI/UX, Compliance (49 frameworks), Brand, Content, Auditing, Orchestration, and Context Saver.",
+  "owner": {
+    "name": "Misar.Dev",
+    "email": "hello@misar.dev",
+    "url": "https://misar.dev"
+  },
+  "plugins": [
+    {
+      "name": "misar-dev",
+      "description": "Complete AI-powered codebase audit suite — 12 categories with dynamic model routing (opus/sonnet/haiku) for 85-95% token savings. Covers QA, Testing, Security, Product, Marketing, UI/UX, Compliance, Brand, Content, Auditing, Orchestration, and Context Saver.",
+      "author": {
+        "name": "Misar.Dev",
+        "email": "hello@misar.dev",
+        "url": "https://misar.dev"
+      },
+      "source": "./plugins/misar-dev",
+      "category": "productivity"
+    }
+  ]
+}

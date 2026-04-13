@@ -1,0 +1,250 @@
+# Context Saver — 3D Router Configuration (v7.0.0)
+# Dimensions: Model × Effort × Version
+
+# ─── Model selection based on task complexity ───
+model_routing:
+  haiku:
+    - pattern: ['typo', 'simple fix', 'quick question', 'read file', 'list files',
+                'check status', 'what is', 'show me', 'git status', 'rename',
+                'delete', 'move', 'grep', 'search for', 'find file']
+    - token_estimate: '<2000'
+
+  sonnet:
+    - pattern: ['implement', 'refactor', 'debug', 'review', 'test', 'fix bug',
+                'add feature', 'update', 'modify', 'create component', 'write function']
+    - token_estimate: '2000-10000'
+
+  opus:
+    - pattern: ['architecture', 'full system', 'complex migration', 'multi-service',
+                'design system', 'plan', 'strategy', 'full-suite', 'compliance audit']
+    - token_estimate: '>10000'
+
+# ─── Effort level routing (NEW in v7.0.0) ───
+effort_routing:
+  low:
+    - pattern: ['read file', 'list files', 'grep', 'search for', 'find file',
+                'git status', 'show me', 'what is', 'check status', 'rename',
+                'delete', 'move', 'ls', 'cat', 'head']
+    - token_estimate: '<500'
+
+  medium:
+    - pattern: ['implement', 'update', 'modify', 'create', 'write',
+                'add feature', 'fix bug', 'simple fix', 'typo',
+                'quick question', 'standard', 'basic']
+    - token_estimate: '500-5000'
+
+  high:
+    - pattern: ['review', 'debug', 'refactor', 'test', 'analyze',
+                'security', 'optimize', 'investigate', 'deep dive',
+                'performance', 'vulnerability']
+    - token_estimate: '5000-15000'
+
+  max:
+    - pattern: ['architecture', 'full-suite', 'compliance', 'design system',
+                'full system', 'audit all', 'strategy', 'migration plan',
+                'complete analysis', '49 frameworks']
+    - token_estimate: '>15000'
+
+# ─── Version routing (NEW in v7.0.0) ───
+version_routing:
+  '4.5':
+    models: ['haiku']
+    model_ids: ['claude-haiku-4-5-20251001']
+    reason: 'Cheapest available for lightweight tasks'
+  '4.6':
+    models: ['sonnet', 'opus']
+    model_ids: ['claude-sonnet-4-6', 'claude-opus-4-6']
+    reason: 'Latest gen for code accuracy and complex reasoning'
+
+# ─── Misar-dev slash command → 3D routing (replaces misar_dev_commands) ───
+misar_dev_commands:
+  '/misar-dev:full-suite':
+    model: opus
+    effort: max
+    version: '4.6'
+  '/misar-dev:compliance':
+    model: opus
+    effort: max
+    version: '4.6'
+  '/misar-dev:security':
+    model: sonnet
+    effort: high
+    version: '4.6'
+  '/misar-dev:qa':
+    model: sonnet
+    effort: high
+    version: '4.6'
+  '/misar-dev:marketing':
+    model: sonnet
+    effort: medium
+    version: '4.6'
+  '/misar-dev:uiux':
+    model: sonnet
+    effort: medium
+    version: '4.6'
+  '/misar-dev:product':
+    model: sonnet
+    effort: medium
+    version: '4.6'
+  '/misar-dev:brand':
+    model: sonnet
+    effort: medium
+    version: '4.6'
+  '/misar-dev:tester':
+    model: sonnet
+    effort: medium
+    version: '4.6'
+  '/misar-dev:content':
+    model: haiku
+    effort: medium
+    version: '4.5'
+  '/misar-dev:auditor':
+    model: haiku
+    effort: medium
+    version: '4.5'
+  '/misar-dev:context-saver':
+    model: haiku
+    effort: low
+    version: '4.5'
+
+# ─── Misar-dev agent 3D assignments (replaces misar_dev_agent_models) ───
+misar_dev_agent_models:
+  opus_max:
+    effort: max
+    version: '4.6'
+    agents:
+      - orchestrator-agents
+      - compliance-agents
+  opus_high:
+    effort: high
+    version: '4.6'
+    agents: []
+  sonnet_high:
+    effort: high
+    version: '4.6'
+    agents:
+      - security-agents
+      - qa-agents
+  sonnet_medium:
+    effort: medium
+    version: '4.6'
+    agents:
+      - marketing-agents
+      - uiux-agents
+      - product-agents
+      - brand-agents
+      - tester-agents
+  haiku_medium:
+    effort: medium
+    version: '4.5'
+    agents:
+      - content-agents
+      - auditor-agents
+  haiku_low:
+    effort: low
+    version: '4.5'
+    agents:
+      - context-saver
+
+# ─── Token budget management ───
+token_budget:
+  max_context_window: 200000
+  max_agents_context: 12000
+  warning_threshold: 0.70
+  critical_threshold: 0.90
+  compaction_trigger: 0.75
+  # Budget-driven 3D overrides
+  budget_overrides:
+    above_90:
+      model: haiku
+      effort: low
+      version: '4.5'
+      action: 'warn user + suggest /compact'
+    above_70:
+      model: haiku
+      effort: low
+      version: '4.5'
+      action: 'silent downgrade'
+    above_40:
+      max_model: sonnet
+      max_effort: medium
+      action: 'cap at sonnet+medium, no opus'
+
+# ─── Agent routing rules — maps keywords to skills/agents ───
+routing_rules:
+  frontend:
+    patterns: ['react', 'vue', 'angular', 'svelte', 'jsx', 'tsx', 'component', 'frontend', 'ui', 'css', 'tailwind']
+    agents: ['frontend-mobile-development:frontend-developer', 'ui-design:ui-designer']
+    priority: critical
+
+  backend:
+    patterns: ['api', 'backend', 'server', 'fastapi', 'django', 'express', 'nodejs', 'endpoint']
+    agents: ['backend-development:backend-architect', 'api-scaffolding:backend-architect']
+    priority: critical
+
+  database:
+    patterns: ['database', 'sql', 'postgres', 'mysql', 'mongodb', 'supabase', 'schema', 'migration', 'query']
+    agents: ['database-design:database-architect', 'database-design:sql-pro']
+    priority: critical
+
+  security:
+    patterns: ['security', 'auth', 'oauth', 'jwt', 'vulnerability', 'xss', 'csrf', 'encryption']
+    agents: ['security-scanning:security-auditor', 'backend-api-security:backend-security-coder']
+    priority: critical
+
+  testing:
+    patterns: ['test', 'testing', 'jest', 'pytest', 'tdd', 'unit test', 'integration test', 'e2e']
+    agents: ['unit-testing:test-automator', 'tdd-workflows:tdd-orchestrator']
+    priority: high
+
+  debugging:
+    patterns: ['debug', 'error', 'bug', 'issue', 'fix', 'troubleshoot', 'crash', 'exception']
+    agents: ['error-debugging:debugger', 'debugging-toolkit:dx-optimizer']
+    priority: critical
+
+  review:
+    patterns: ['review', 'pr review', 'code review', 'refactor']
+    agents: ['pr-review-toolkit:code-reviewer', 'code-review-ai:architect-review']
+    priority: high
+
+  cloud:
+    patterns: ['cloud', 'aws', 'azure', 'gcp', 'deploy', 'docker', 'kubernetes', 'k8s', 'ci/cd']
+    agents: ['cloud-infrastructure:cloud-architect', 'cicd-automation:deployment-engineer']
+    priority: critical
+
+  docs:
+    patterns: ['documentation', 'docs', 'readme', 'api docs', 'diagram']
+    agents: ['documentation-generation:docs-architect', 'c4-architecture:c4-context']
+    priority: medium
+
+  ml:
+    patterns: ['machine learning', 'ml', 'ai', 'llm', 'langchain', 'vector', 'embeddings']
+    agents: ['llm-application-dev:ai-engineer', 'machine-learning-ops:ml-engineer']
+    priority: critical
+
+  performance:
+    patterns: ['performance', 'optimize', 'slow', 'latency', 'speed', 'benchmark']
+    agents: ['application-performance:performance-engineer']
+    priority: high
+
+  misar_audit:
+    patterns: ['audit', 'full-suite', 'compliance', 'seo', 'accessibility', 'wcag']
+    agents: ['misar-dev:orchestrator-agents']
+    priority: high
+
+# ─── Agent dependencies ───
+agent_dependencies:
+  'api-scaffolding:backend-architect':
+    - 'database-design:database-architect'
+    - 'backend-api-security:backend-security-coder'
+  'frontend-mobile-development:frontend-developer':
+    - 'ui-design:ui-designer'
+  'unit-testing:test-automator':
+    - 'error-debugging:debugger'
+
+# ─── Fallback when no match ───
+fallback:
+  agents: ['general-purpose']
+  model: 'sonnet'
+  effort: 'medium'
+  version: '4.6'
