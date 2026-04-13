@@ -65,14 +65,28 @@ Saves 85-95% context tokens by routing lightweight tasks to cheaper models.
 
 ## Quick Start
 
-### Install
+### Install — Claude Code plugin (full suite)
 
 ```bash
-git clone https://github.com/misardev/misar-ai-plugins.git \
+git clone https://github.com/G1-Technologies/misar-ai-plugins.git \
   ~/.claude/plugins/marketplaces/misar-ai-plugins
 ```
 
-### Use
+### Install — individual skills via `npx skills` (any AI agent)
+
+Works with Claude Code, Cursor, Cline, Copilot, Windsurf, and any `npx skills`-compatible agent:
+
+```bash
+# Install all 16 skills at once
+npx skills add G1-Technologies/misar-ai-plugins
+
+# Or install a specific skill
+npx skills add G1-Technologies/misar-ai-plugins/skills/security
+npx skills add G1-Technologies/misar-ai-plugins/skills/uiux
+npx skills add G1-Technologies/misar-ai-plugins/skills/qa
+```
+
+### Use (Claude Code)
 
 Run a full audit:
 
