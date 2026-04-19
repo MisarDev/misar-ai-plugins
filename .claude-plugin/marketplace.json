@@ -1,0 +1,22 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "misar-ai-plugins",
+  "description": "Misar AI plugin suite — AI-powered development, compliance, security, UI/UX, and content workflows for Claude Code",
+  "owner": {
+    "name": "Misar AI Technology Pvt. Ltd.",
+    "email": "hello@misar.io"
+  },
+  "plugins": [
+    {
+      "name": "misar-dev",
+      "description": "Full-stack AI development toolkit — code generation, compliance checks, security audits, UI/UX design, content creation, and automated testing via 16 specialized agents",
+      "author": {
+        "name": "Misar AI Technology Pvt. Ltd.",
+        "email": "hello@misar.io"
+      },
+      "source": "./plugins/misar-dev",
+      "category": "development",
+      "homepage": "https://github.com/MisarDev/misar-ai-plugins"
+    }
+  ]
+}
