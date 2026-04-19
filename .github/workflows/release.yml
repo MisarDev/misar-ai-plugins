@@ -1,0 +1,53 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  release:
+    name: Publish GitHub release
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Validate before release
+        run: node scripts/validate.mjs
+
+      - name: Extract version from tag
+        id: version
+        run: |
+          TAG="${GITHUB_REF_NAME}"
+          echo "tag=${TAG}" >> "$GITHUB_OUTPUT"
+          echo "version=${TAG#v}" >> "$GITHUB_OUTPUT"
+
+      - name: Verify plugin.json version matches tag
+        env:
+          TAG_VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          PLUGIN_VERSION=$(node -e "const {version}=JSON.parse(require('fs').readFileSync('plugins/misar-dev/.claude-plugin/plugin.json','utf8'));process.stdout.write(version)")
+          if [ "$PLUGIN_VERSION" != "$TAG_VERSION" ]; then
+            echo "Version mismatch: plugin.json has $PLUGIN_VERSION but tag is $TAG_VERSION"
+            exit 1
+          fi
+          echo "Version match: $PLUGIN_VERSION"
+
+      - name: Create GitHub release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG: ${{ steps.version.outputs.tag }}
+        run: |
+          gh release create "$TAG" \
+            --title "misar-dev $TAG" \
+            --generate-notes \
+            --latest
