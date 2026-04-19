@@ -15,21 +15,58 @@ Works on Claude Code, Cursor, Cline, GitHub Copilot, Windsurf, and any [`npx ski
 
 ## Quick Start
 
-### Claude Code
+### Claude Code CLI
+
+**Fresh install** (recommended):
 
 ```bash
-git clone https://github.com/MisarDev/misar-ai-plugins.git \
-  ~/.claude/plugins/marketplaces/misar-ai-plugins
+# Step 1 — register the marketplace
+claude plugins marketplace add https://github.com/MisarDev/misar-ai-plugins.git
+
+# Step 2 — install the plugin
+claude plugins install misar-dev
 ```
 
-Restart Claude Code. All `/misar-dev:*` commands are immediately available.
+All `/misar-dev:*` commands are immediately available. No restart needed.
+
+**Update to latest version:**
+
+```bash
+claude plugins marketplace update misar-ai-plugins
+claude plugins update misar-dev
+```
+
+**Uninstall:**
+
+```bash
+claude plugins uninstall misar-dev
+```
+
+---
+
+### Claude Code Desktop App / VS Code Extension
+
+1. Open **Settings** → **Plugins** → **Marketplace**
+2. Click **Add Marketplace** and enter:
+
+   ```
+   https://github.com/MisarDev/misar-ai-plugins.git
+   ```
+
+3. Find **misar-dev** in the marketplace list and click **Install**
+
+---
+
+> **If you previously used `git clone`** and see *"destination path already exists"*: that manual approach is deprecated. Run `claude plugins marketplace add` + `claude plugins install` instead — it manages updates, versioning, and hooks automatically.
+
+---
 
 ### Any AI agent — via `npx skills`
 
 Works with Cursor, Cline, GitHub Copilot, Windsurf, and any [`npx skills`](https://skills.sh)-compatible agent:
 
 ```bash
-# Install all 16 skills
+# Install all 17 skills
 npx skills add MisarDev/misar-ai-plugins
 
 # Or install a specific skill
@@ -40,7 +77,7 @@ npx skills add MisarDev/misar-ai-plugins/skills/software-engineer
 
 ---
 
-## Commands (16)
+## Commands (17)
 
 | Command | Argument Hint | Description |
 |---------|--------------|-------------|
