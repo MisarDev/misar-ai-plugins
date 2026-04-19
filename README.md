@@ -124,7 +124,7 @@ npx skills add MisarDev/misar-ai-plugins/skills/security          # one skill
 npx skills add MisarDev/misar-ai-plugins/skills/uiux
 npx skills add MisarDev/misar-ai-plugins/skills/software-engineer
 ```
-## Commands (15)
+## Commands (16)
 
 | Command | Argument Hint | Description |
 |---------|--------------|-------------|
@@ -143,6 +143,7 @@ npx skills add MisarDev/misar-ai-plugins/skills/software-engineer
 | `/misar-dev:software-engineer` | `[agents] [--prd=file.md] [--path=src/] [--framework=nextjs]` | Build from PRD/specs — PRD analysis, planning, code generation, validation, recommendations |
 | `/misar-dev:auditor` | `[url] [categories] [--quick\|--deep]` | Website audit — SEO, Accessibility, Performance, Security, Mobile, Content, Compliance |
 | `/misar-dev:guidelines` | `[show]` | LLM coding guidelines — Think Before Coding, Simplicity First, Surgical Changes, Goal-Driven Execution |
+| `/misar-dev:billing` | `[lifecycle\|security\|pricing\|integrity] [--stack=stripe\|paddle] [--path=src/]` | Billing & subscription audit — lifecycle, CSRF on payment forms, pricing centralization, webhook integrity |
 | `/misar-dev:context-saver` | `[status\|setup\|config\|reset]` | 3D Router — manual control over model×effort×version switching and token budget |
 
 ### Natural language triggers
@@ -165,6 +166,7 @@ Commands also auto-trigger on matching prompts — no slash command needed:
 | `"build from PRD"`, `"implement spec"`, `"plan this project"` | `/misar-dev:software-engineer` |
 | `"audit my site"`, `"full website review"` | `/misar-dev:auditor` |
 | `"full audit"`, `"audit everything"` | `/misar-dev:full-suite` |
+| `"audit my billing"`, `"check subscription flow"`, `"is my checkout secure"`, `"find billing bugs"` | `/misar-dev:billing` |
 
 ---
 
@@ -188,6 +190,7 @@ Commands also auto-trigger on matching prompts — no slash command needed:
 | `seo-content-agents` | claude-sonnet-4.6 | Research Analyst, Content Architect, Writer, Humanizer, SEO Optimizer, Quality Scorer | End-to-end AEO/SEO content pipeline |
 | `software-engineer-agents` | claude-sonnet-4.6 | PRD Analyzer, Project Planner, Code Generator, Code Validator, Next Steps | Build complete projects from specification |
 | `auditor-agents` | claude-haiku-4.5 | SEO, Accessibility, Performance, Security, Mobile, Content, Compliance | Website audit — Quick (HTTP), Deep (Playwright), Source-Only modes |
+| `billing-agents` | claude-sonnet-4.6 | Lifecycle, Security, Pricing Centralization, Webhook Integrity | Billing & subscription audit — Stripe/Paddle lifecycle, payment security, pricing, webhook idempotency |
 
 ---
 
