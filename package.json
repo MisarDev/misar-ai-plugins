@@ -1,0 +1,15 @@
+{
+  "name": "misar-ai-plugins",
+  "version": "7.6.0",
+  "description": "Misar.Dev — Claude Code Plugin Suite",
+  "scripts": {
+    "setup": "bash scripts/onboarding.sh",
+    "update": "claude plugins marketplace update misar-ai-plugins && claude plugins update misar-dev",
+    "uninstall": "claude plugins uninstall misar-dev"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/MisarDev/misar-ai-plugins.git"
+  },
+  "license": "MIT"
+}

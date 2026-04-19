@@ -13,71 +13,118 @@ Works on Claude Code, Cursor, Cline, GitHub Copilot, Windsurf, and any [`npx ski
 
 ---
 
-## Quick Start
+## Install & Enable
 
-### Claude Code CLI
+### Option A — Auto-enable for teams (recommended)
 
-**Fresh install** (recommended):
+Commit this to your project's `.claude/settings.json` so every teammate gets the plugin pre-enabled on first launch — no manual steps needed:
+
+```json
+{
+  "enabledPlugins": {
+    "misar-dev@misar-ai-plugins": true
+  }
+}
+```
+
+Then add the marketplace once per machine in **Claude Code Settings → Plugins → Add Marketplace**:
+```
+https://github.com/MisarDev/misar-ai-plugins.git
+```
+
+### Option B — CLI one-liner
 
 ```bash
-# Step 1 — register the marketplace
-claude plugins marketplace add https://github.com/MisarDev/misar-ai-plugins.git
-
-# Step 2 — install the plugin
 claude plugins install misar-dev
 ```
 
-All `/misar-dev:*` commands are immediately available. No restart needed.
-
-**Update to latest version:**
+### Setup scripts
 
 ```bash
-claude plugins marketplace update misar-ai-plugins
-claude plugins update misar-dev
+make setup   # recommended
+pnpm setup   # alternative
 ```
 
-**Uninstall:**
+---
+
+### Platform Guide
+
+#### Claude Code CLI
 
 ```bash
+# Step 1 — add marketplace (one-time)
+claude plugins marketplace add https://github.com/MisarDev/misar-ai-plugins.git
+
+# Step 2 — install
+claude plugins install misar-dev
+
+# Step 3 — verify (restart Claude Code, then run):
+/misar-dev:guidelines show
+
+# Update to latest:
+claude plugins marketplace update misar-ai-plugins
+claude plugins update misar-dev
+
+# Uninstall:
 claude plugins uninstall misar-dev
 ```
 
----
+#### VS Code Extension
 
-### Claude Code Desktop App / VS Code Extension
+1. Open VS Code with the Claude Code extension active
+2. Press `⌘⇧P` → **Claude Code: Open Settings**
+3. **Plugins → Add Marketplace** → paste `https://github.com/MisarDev/misar-ai-plugins.git`
+4. Find **misar-dev** in the list → click **Install**
+5. Reload VS Code — all `/misar-dev:*` commands appear in the slash command palette
 
-1. Open **Settings** → **Plugins** → **Marketplace**
-2. Click **Add Marketplace** and enter:
+#### Claude Code Desktop App
 
-   ```
-   https://github.com/MisarDev/misar-ai-plugins.git
-   ```
+1. Desktop app → **Settings** (gear icon) → **Plugins**
+2. **Add Marketplace** → paste `https://github.com/MisarDev/misar-ai-plugins.git`
+3. Find **misar-dev** → click **Install**
+4. Restart the app — all commands are immediately available
 
-3. Find **misar-dev** in the marketplace list and click **Install**
+#### claude.ai Web (Skills only)
 
----
+Claude.ai supports Skills, not full plugins. Each `SKILL.md` in this repo is individually importable:
 
-> **If you previously used `git clone`** and see *"destination path already exists"*: that manual approach is deprecated. Run `claude plugins marketplace add` + `claude plugins install` instead — it manages updates, versioning, and hooks automatically.
+1. Open [claude.ai](https://claude.ai) → **Settings** → **Skills**
+2. Click **Add Skill** → **Import from URL**
+3. Paste the raw GitHub URL of any skill:
 
----
+```
+https://raw.githubusercontent.com/MisarDev/misar-ai-plugins/main/skills/security/SKILL.md
+```
 
-### Any AI agent — via `npx skills`
+Available skills:
 
-Works with Cursor, Cline, GitHub Copilot, Windsurf, and any [`npx skills`](https://skills.sh)-compatible agent:
+| Skill | Raw URL path |
+|-------|-------------|
+| Security audit | `skills/security/SKILL.md` |
+| Code quality | `skills/qa/SKILL.md` |
+| Testing | `skills/tester/SKILL.md` |
+| UI/UX audit | `skills/uiux/SKILL.md` |
+| UI/UX design consultation | `skills/uiux-designer/SKILL.md` |
+| Compliance (49 frameworks) | `skills/compliance/SKILL.md` |
+| Build from PRD | `skills/software-engineer/SKILL.md` |
+| Marketing & growth | `skills/marketing/SKILL.md` |
+| AEO/SEO content pipeline | `skills/seo-content-generator/SKILL.md` |
+| Website audit | `skills/auditor/SKILL.md` |
+| Brand & psychology | `skills/brand/SKILL.md` |
+| Product strategy | `skills/product/SKILL.md` |
+| Language & content | `skills/content/SKILL.md` |
+| Full 48-agent orchestration | `skills/full-suite/SKILL.md` |
+| Coding guidelines | `skills/guidelines/SKILL.md` |
+
+#### Cursor / Cline / Windsurf / GitHub Copilot — via `npx skills`
 
 ```bash
-# Install all 17 skills
-npx skills add MisarDev/misar-ai-plugins
-
-# Or install a specific skill
-npx skills add MisarDev/misar-ai-plugins/skills/security
+npx skills add MisarDev/misar-ai-plugins                          # all skills
+npx skills add MisarDev/misar-ai-plugins/skills/security          # one skill
 npx skills add MisarDev/misar-ai-plugins/skills/uiux
 npx skills add MisarDev/misar-ai-plugins/skills/software-engineer
 ```
-
----
-
-## Commands (17)
+## Commands (15)
 
 | Command | Argument Hint | Description |
 |---------|--------------|-------------|
@@ -96,7 +143,6 @@ npx skills add MisarDev/misar-ai-plugins/skills/software-engineer
 | `/misar-dev:software-engineer` | `[agents] [--prd=file.md] [--path=src/] [--framework=nextjs]` | Build from PRD/specs — PRD analysis, planning, code generation, validation, recommendations |
 | `/misar-dev:auditor` | `[url] [categories] [--quick\|--deep]` | Website audit — SEO, Accessibility, Performance, Security, Mobile, Content, Compliance |
 | `/misar-dev:guidelines` | `[show]` | LLM coding guidelines — Think Before Coding, Simplicity First, Surgical Changes, Goal-Driven Execution |
-| `/misar-dev:billing` | `[lifecycle\|security\|pricing\|integrity] [--stack=stripe\|paddle] [--path=src/]` | Billing & subscription audit — lifecycle, CSRF on payment forms, pricing centralization, webhook integrity |
 | `/misar-dev:context-saver` | `[status\|setup\|config\|reset]` | 3D Router — manual control over model×effort×version switching and token budget |
 
 ### Natural language triggers
@@ -119,7 +165,6 @@ Commands also auto-trigger on matching prompts — no slash command needed:
 | `"build from PRD"`, `"implement spec"`, `"plan this project"` | `/misar-dev:software-engineer` |
 | `"audit my site"`, `"full website review"` | `/misar-dev:auditor` |
 | `"full audit"`, `"audit everything"` | `/misar-dev:full-suite` |
-| `"audit my billing"`, `"check subscription flow"`, `"is my checkout secure"`, `"find billing bugs"` | `/misar-dev:billing` |
 
 ---
 
@@ -127,22 +172,22 @@ Commands also auto-trigger on matching prompts — no slash command needed:
 
 | Agent | Model | Sub-agents | Description |
 |-------|-------|-----------|-------------|
-| `orchestrator-agents` | opus | — | 48-agent orchestrator — 4-phase execution, Observer Agent token management, batched parallel processing (max 4) |
-| `context-saver` | haiku | — | 3D model router — auto-switches model×effort×version by task type. Saves 90–97% tokens. Auto-enabled via SessionStart hook |
-| `task-fragmenter` | haiku | — | Decomposes prompts into optimal parallel subtasks with model assignments for Agent dispatch |
-| `security-agents` | sonnet | Security Hardening, Compliance, Penetration Testing, Data Privacy | Security deep-dive across the full attack surface |
-| `compliance-agents` | opus | 49 frameworks × 7 tiers | Global regulatory compliance — GDPR, HIPAA, SOC2, ISO 27001, PCI-DSS, and 44 more |
-| `qa-agents` | sonnet | Code Reviewer, Standards Compliance, Bug Detective, Technical Debt | Code quality audit across any codebase |
-| `tester-agents` | sonnet | Unit, Integration, E2E Black Box, E2E White Box, Beta, Regression | Full test coverage audit |
-| `uiux-agents` | sonnet | Spacing & Layout, Typography & Color, Components, Accessibility, Performance, Mobile, Animation, Dark Mode | 8-dimension UI/UX design quality audit |
-| `uiux-designer-agents` | sonnet | Project Analyzer, Design Guidelines, Brand Recommender, Component Advisor, Design Critic | UI/UX design consultation and system creation |
-| `marketing-agents` | sonnet | SEO, SXO, Content Marketing, Growth, Analytics, AI Search Optimization | Marketing and growth strategy audit |
-| `brand-agents` | sonnet | Brand Development, User Psychology, Conversion, Emotional Design | Brand identity and conversion psychology audit |
-| `product-agents` | sonnet | PM, Designer, Development, Feature Prioritization | Product strategy and roadmap audit |
-| `content-agents` | haiku | Grammar Expert, Copy, Localization, Documentation | Language quality and content audit |
-| `seo-content-agents` | sonnet | Research Analyst, Content Architect, Writer, Humanizer, SEO Optimizer, Quality Scorer | End-to-end AEO/SEO content pipeline |
-| `software-engineer-agents` | sonnet | PRD Analyzer, Project Planner, Code Generator, Code Validator, Next Steps | Build complete projects from specification |
-| `auditor-agents` | haiku | SEO, Accessibility, Performance, Security, Mobile, Content, Compliance | Website audit — Quick (HTTP), Deep (Playwright), Source-Only modes |
+| `orchestrator-agents` | claude-opus-4.7 | — | 48-agent orchestrator — 4-phase execution, Observer Agent token management, batched parallel processing (max 4) |
+| `context-saver` | claude-haiku-4.5 | — | 3D model router — auto-switches model×effort×version by task type. Saves 90–97% tokens. Auto-enabled via SessionStart hook |
+| `task-fragmenter` | claude-haiku-4.5 | — | Decomposes prompts into optimal parallel subtasks with model assignments for Agent dispatch |
+| `security-agents` | claude-sonnet-4.6 | Security Hardening, Compliance, Penetration Testing, Data Privacy | Security deep-dive across the full attack surface |
+| `compliance-agents` | claude-opus-4.7 | 49 frameworks × 7 tiers | Global regulatory compliance — GDPR, HIPAA, SOC2, ISO 27001, PCI-DSS, and 44 more |
+| `qa-agents` | claude-sonnet-4.6 | Code Reviewer, Standards Compliance, Bug Detective, Technical Debt | Code quality audit across any codebase |
+| `tester-agents` | claude-sonnet-4.6 | Unit, Integration, E2E Black Box, E2E White Box, Beta, Regression | Full test coverage audit |
+| `uiux-agents` | claude-sonnet-4.6 | Spacing & Layout, Typography & Color, Components, Accessibility, Performance, Mobile, Animation, Dark Mode | 8-dimension UI/UX design quality audit |
+| `uiux-designer-agents` | claude-sonnet-4.6 | Project Analyzer, Design Guidelines, Brand Recommender, Component Advisor, Design Critic | UI/UX design consultation and system creation |
+| `marketing-agents` | claude-sonnet-4.6 | SEO, SXO, Content Marketing, Growth, Analytics, AI Search Optimization | Marketing and growth strategy audit |
+| `brand-agents` | claude-sonnet-4.6 | Brand Development, User Psychology, Conversion, Emotional Design | Brand identity and conversion psychology audit |
+| `product-agents` | claude-sonnet-4.6 | PM, Designer, Development, Feature Prioritization | Product strategy and roadmap audit |
+| `content-agents` | claude-haiku-4.5 | Grammar Expert, Copy, Localization, Documentation | Language quality and content audit |
+| `seo-content-agents` | claude-sonnet-4.6 | Research Analyst, Content Architect, Writer, Humanizer, SEO Optimizer, Quality Scorer | End-to-end AEO/SEO content pipeline |
+| `software-engineer-agents` | claude-sonnet-4.6 | PRD Analyzer, Project Planner, Code Generator, Code Validator, Next Steps | Build complete projects from specification |
+| `auditor-agents` | claude-haiku-4.5 | SEO, Accessibility, Performance, Security, Mobile, Content, Compliance | Website audit — Quick (HTTP), Deep (Playwright), Source-Only modes |
 
 ---
 
