@@ -1,5 +1,5 @@
 {
-  "description": "Misar Dev — context-saver auto-routing.",
+  "description": "Misar Dev — context-saver auto-routing + git workflow enforcement.",
   "hooks": {
     "SessionStart": [
       {
@@ -8,6 +8,17 @@
           {
             "type": "command",
             "command": "${CLAUDE_PLUGIN_ROOT}/hooks-handlers/session-start.sh"
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "matcher": ".*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "${CLAUDE_PLUGIN_ROOT}/hooks-handlers/stop-git-manager.sh"
           }
         ]
       }
