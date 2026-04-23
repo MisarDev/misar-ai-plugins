@@ -2,11 +2,11 @@
   "mcpServers": {
     "misarcoder": {
       "command": "python3",
-      "args": ["${HOME}/.claude/scripts/misarcoder-mcp.py"]
+      "args": ["/Users/researchfellow/.claude/scripts/misarcoder-mcp.py"]
     },
     "guardrails": {
       "command": "python3",
-      "args": ["${HOME}/.claude/scripts/guardrails-mcp.py"],
+      "args": ["/Users/researchfellow/.claude/scripts/guardrails-mcp.py"],
       "env": {
         "ASSISTERS_API_KEY": "${ASSISTERS_API_KEY}",
         "GUARDRAILS_TIMEOUT": "30"
@@ -14,7 +14,7 @@
     },
     "guardian": {
       "command": "python3",
-      "args": ["${HOME}/.claude/scripts/guardian-mcp.py"],
+      "args": ["/Users/researchfellow/.claude/scripts/guardian-mcp.py"],
       "env": {
         "GUARDIAN_TIMEOUT": "120",
         "SEMGREP_BIN": "semgrep"
