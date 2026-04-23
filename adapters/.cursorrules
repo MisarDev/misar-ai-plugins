@@ -1,0 +1,32 @@
+# Misar.Dev Rules for Cursor
+
+## MCP Servers (install: bash scripts/install.sh)
+Add to Cursor Settings → MCP → Add Server:
+- misarcoder: python3 ~/.claude/scripts/misarcoder-mcp.py
+- guardrails:  python3 ~/.claude/scripts/guardrails-mcp.py  (env: ASSISTERS_API_KEY)
+- guardian:    python3 ~/.claude/scripts/guardian-mcp.py    (env: SEMGREP_BIN=semgrep)
+
+## AI API
+Never use OpenAI/Anthropic/Google SDKs directly.
+Use: baseURL=https://assisters.dev/api/v1, model=assisters-chat-v1, key=$ASSISTERS_API_KEY
+
+## Code Standards
+- TypeScript strict — no `as any`
+- Supabase: `.maybeSingle()` not `.single()`; add types to database.ts
+- Zod validate all POST route inputs
+- No speculative abstractions — only what the task requires
+- Conventional commits: `<type>(<scope>): <description>`
+- Never commit secrets — use .env (gitignored)
+- CSRF protection on all state-mutating endpoints
+- WCAG 2.1 AA — 4.5:1 text contrast, 44px touch targets
+
+## Infrastructure (Misar AI)
+- Forgejo git.misar.io (not GitHub)
+- Coolify hosting (not Vercel/Netlify)
+- Self-hosted Supabase per product
+- MisarMail for email (not SendGrid/Resend)
+- Redis misar-redis container (not Upstash)
+
+## Available Audits (ask the AI to run these)
+security · full-suite · qa · uiux · seo · compliance · software-engineer
+brand · marketing · billing · tester · content · product · auditor

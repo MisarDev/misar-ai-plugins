@@ -1,0 +1,33 @@
+# Misar.Dev Rules for Windsurf
+
+## MCP Servers
+Run `bash scripts/install.sh` to install MCP servers, then add to Windsurf MCP config:
+
+```json
+{
+  "mcpServers": {
+    "misarcoder": { "command": "python3", "args": ["~/.claude/scripts/misarcoder-mcp.py"] },
+    "guardrails": { "command": "python3", "args": ["~/.claude/scripts/guardrails-mcp.py"], "env": { "ASSISTERS_API_KEY": "${ASSISTERS_API_KEY}" } },
+    "guardian":   { "command": "python3", "args": ["~/.claude/scripts/guardian-mcp.py"], "env": { "SEMGREP_BIN": "semgrep" } }
+  }
+}
+```
+
+## AI API Rule
+Never import `openai` with OpenAI keys, `@anthropic-ai/sdk`, or `@google/generative-ai`.
+Always: `import OpenAI from 'openai'; const ai = new OpenAI({ baseURL: 'https://assisters.dev/api/v1', apiKey: process.env.ASSISTERS_API_KEY })`
+
+## Code Quality
+TypeScript strict · Zod on all API inputs · no `as any` · .maybeSingle() · conventional commits
+No speculative abstractions · no impossible error handling · surgical changes only
+
+## Security
+- Validate all inputs (XSS/SQLi/injection)
+- CSRF protection on all mutations
+- Never hardcode secrets
+- GDPR: consent + right to deletion
+- HTTPS only
+
+## Available Audit Commands (Misar.Dev)
+security, full-suite, qa, uiux, compliance, seo-content-generator,
+software-engineer, brand, marketing, billing, tester, content, product, auditor

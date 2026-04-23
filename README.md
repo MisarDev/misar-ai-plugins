@@ -1,13 +1,16 @@
-# Misar.Dev — Claude Code Plugin Suite
+# Misar.Dev — Universal AI Plugin Suite
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-[![Version](https://img.shields.io/badge/version-7.6.0-green.svg)](https://github.com/MisarDev/misar-ai-plugins/releases/tag/v7.6.0)
+[![Version](https://img.shields.io/badge/version-7.8.0-green.svg)](https://github.com/MisarDev/misar-ai-plugins/releases/tag/v7.8.0)
 [![Claude Code](https://img.shields.io/badge/Claude%20Code-Plugin-purple.svg)](https://claude.ai/claude-code)
-[![npx skills](https://img.shields.io/badge/npx%20skills-compatible-blue.svg)](https://skills.sh)
+[![Codex](https://img.shields.io/badge/OpenAI%20Codex-AGENTS.md-black.svg)](adapters/AGENTS.md)
+[![Gemini CLI](https://img.shields.io/badge/Gemini%20CLI-GEMINI.md-blue.svg)](adapters/GEMINI.md)
+[![Cursor](https://img.shields.io/badge/Cursor-.cursorrules-orange.svg)](adapters/.cursorrules)
+[![Windsurf](https://img.shields.io/badge/Windsurf-.windsurfrules-teal.svg)](adapters/.windsurfrules)
 
-**48-agent audit and optimization suite for Claude Code.** 16 categories, 3D model routing (model×effort×version), interactive flag prompting, parallel task dispatch, and automatic token budget management. Saves 90–97% context tokens on lightweight tasks.
+**48-agent audit and optimization suite — one install, every platform.** 16 audit categories, 3 MCP servers (MisarCoder free engine + Guardrails + Guardian), 3D model routing (model×effort×version), parallel subagent dispatch, 90–97% token savings.
 
-Works on Claude Code, Cursor, Cline, GitHub Copilot, Windsurf, and any [`npx skills`](https://skills.sh)-compatible agent.
+One command sets up **skills · agents · MCPs · hooks · memory · cross-platform adapters** on any new machine or account.
 
 **Built by [Misar.Dev](https://misar.dev)** — Open-source AI developer tools.
 
@@ -15,9 +18,39 @@ Works on Claude Code, Cursor, Cline, GitHub Copilot, Windsurf, and any [`npx ski
 
 ## Install & Enable
 
-### Option A — Auto-enable for teams (recommended)
+### Universal one-liner (any platform, any machine)
 
-Commit this to your project's `.claude/settings.json` so every teammate gets the plugin pre-enabled on first launch — no manual steps needed:
+```bash
+git clone https://github.com/MisarDev/misar-ai-plugins.git
+cd misar-ai-plugins
+bash scripts/install.sh
+```
+
+`install.sh` auto-detects your platform and sets up **everything**:
+- MCP servers (misarcoder, guardrails, guardian) → `~/.claude/scripts/`
+- Claude Code plugin (marketplace + install)
+- MCPs wired into `~/.claude/settings.json`
+- Codex `AGENTS.md` + `mcp.json` → `~/.codex/`
+- Gemini CLI `GEMINI.md` → `~/.gemini/`
+- Memory bootstrap → `~/.claude/memory/MEMORY.md`
+- Offers project-level adapters (`.cursorrules`, `.windsurfrules`, `AGENTS.md`, `GEMINI.md`)
+
+### Platform compatibility
+
+| Platform | What gets set up | Adapter file |
+|----------|-----------------|--------------|
+| **Claude Code** (CLI, desktop, VS Code, JetBrains) | Plugin + 3 MCPs + hooks + memory | `plugins/misar-dev/` |
+| **OpenAI Codex** | Instructions + MCP config | `adapters/AGENTS.md` |
+| **Gemini CLI** | Instructions + MCP config | `adapters/GEMINI.md` |
+| **Cursor** | Rules + MCP instructions | `adapters/.cursorrules` |
+| **Windsurf** | Rules + MCP instructions | `adapters/.windsurfrules` |
+| **GitHub Copilot Workspace** | Instructions | `adapters/copilot-instructions.md` |
+| **Cline / Continue (VS Code)** | MCP config | `adapters/mcp.json` |
+| **Any MCP-compatible agent** | Standard MCP config | `adapters/mcp.json` |
+
+### Option A — Auto-enable for teams (Claude Code)
+
+Commit to your project's `.claude/settings.json`:
 
 ```json
 {
@@ -32,7 +65,7 @@ Then add the marketplace once per machine in **Claude Code Settings → Plugins 
 https://github.com/MisarDev/misar-ai-plugins.git
 ```
 
-### Option B — CLI one-liner
+### Option B — CLI one-liner (Claude Code only)
 
 ```bash
 claude plugins install misar-dev
@@ -41,7 +74,7 @@ claude plugins install misar-dev
 ### Setup scripts
 
 ```bash
-make setup   # recommended
+make setup   # universal (recommended)
 pnpm setup   # alternative
 ```
 
@@ -124,6 +157,32 @@ npx skills add MisarDev/misar-ai-plugins/skills/security          # one skill
 npx skills add MisarDev/misar-ai-plugins/skills/uiux
 npx skills add MisarDev/misar-ai-plugins/skills/software-engineer
 ```
+---
+
+## MCP Servers (3)
+
+Bundled in `mcp/` — installed to `~/.claude/scripts/` by `install.sh`.
+
+| Server | Tools | Purpose |
+|--------|-------|---------|
+| **misarcoder** | `misarcoder_complete`, `misarcoder_ask` | Free MoE engine (Gemini Flash, Groq Llama, Mistral) — delegates code gen, analysis, reasoning without spending Anthropic tokens |
+| **guardrails** | `guardrails_check_input`, `guardrails_check_output`, `guardrails_moderate`, `guardrails_detect_injection`, `guardrails_pii_scan`, `guardrails_configure_rails` | Content safety, prompt injection detection, PII scanning, output policy enforcement via assisters.dev |
+| **guardian** | `guardian_semgrep_scan`, `guardian_scan_snippet`, `guardian_dependency_audit`, `guardian_secret_scan`, `guardian_license_check`, `guardian_security_headers` | Semgrep SAST, CVE dependency audit, secret/entropy detection, copyleft license flagging, security headers validation |
+
+**Manual MCP config** (paste into any agent's MCP settings):
+```json
+// adapters/mcp.json
+{
+  "mcpServers": {
+    "misarcoder": { "command": "python3", "args": ["~/.claude/scripts/misarcoder-mcp.py"] },
+    "guardrails": { "command": "python3", "args": ["~/.claude/scripts/guardrails-mcp.py"], "env": { "ASSISTERS_API_KEY": "$ASSISTERS_API_KEY" } },
+    "guardian":   { "command": "python3", "args": ["~/.claude/scripts/guardian-mcp.py"], "env": { "SEMGREP_BIN": "semgrep" } }
+  }
+}
+```
+
+---
+
 ## Commands (16)
 
 | Command | Argument Hint | Description |

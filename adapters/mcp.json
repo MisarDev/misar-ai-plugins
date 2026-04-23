@@ -1,0 +1,27 @@
+{
+  "mcpServers": {
+    "misarcoder": {
+      "command": "python3",
+      "args": ["${HOME}/.claude/scripts/misarcoder-mcp.py"],
+      "description": "MisarCoder free MoE engine — code gen, analysis, reasoning via Gemini/Groq/Mistral"
+    },
+    "guardrails": {
+      "command": "python3",
+      "args": ["${HOME}/.claude/scripts/guardrails-mcp.py"],
+      "env": {
+        "ASSISTERS_API_KEY": "${ASSISTERS_API_KEY}",
+        "GUARDRAILS_TIMEOUT": "30"
+      },
+      "description": "Content safety, prompt injection detection, PII scan, output moderation"
+    },
+    "guardian": {
+      "command": "python3",
+      "args": ["${HOME}/.claude/scripts/guardian-mcp.py"],
+      "env": {
+        "GUARDIAN_TIMEOUT": "120",
+        "SEMGREP_BIN": "semgrep"
+      },
+      "description": "Semgrep SAST, dependency CVE audit, secret scanning, license check, security headers"
+    }
+  }
+}
