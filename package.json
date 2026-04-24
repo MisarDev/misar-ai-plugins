@@ -1,6 +1,6 @@
 {
   "name": "misar-ai-plugins",
-  "version": "7.8.0",
+  "version": "8.1.0",
   "description": "Misar.Dev — Claude Code Plugin Suite",
   "scripts": {
     "setup": "bash scripts/install.sh",
