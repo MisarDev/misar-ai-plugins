@@ -4,11 +4,17 @@
 # v8.2.0 — expanded detection: commit msgs, PR descriptions, changelogs, release notes, docs, blog
 
 INPUT=$(cat)
-PROMPT=$(echo "$INPUT" | python3 -c "
+
+# ── Extract prompt: jq (<5 ms) with python3 fallback ──
+if command -v jq > /dev/null 2>&1; then
+  PROMPT=$(echo "$INPUT" | jq -r '.prompt // .user_prompt // ""' 2>/dev/null)
+else
+  PROMPT=$(echo "$INPUT" | python3 -c "
 import sys, json
 d = json.load(sys.stdin)
-print((d.get('prompt', '') or d.get('user_prompt', '')))
-" 2>/dev/null)
+print((d.get('prompt', '') or d.get('user_prompt', '')))" 2>/dev/null)
+fi
+
 PROMPT_LOWER=$(echo "$PROMPT" | tr '[:upper:]' '[:lower:]')
 
 # ── Skip short prompts (cheap anyway) ──
@@ -54,7 +60,7 @@ else
   IS_DOCS="${IS_DOCS//[^0-9]/}"; IS_DOCS="${IS_DOCS:-0}"
 
   TASK_TYPE=""
-  if [[ "$IS_DOCS" -gt 0 ]]; then TASK_TYPE="generation"; fi
+  if [[ "$IS_DOCS" -gt 0 ]]; then TASK_TYPE="docs"; fi
   if [[ "$IS_GENERATION" -gt 0 ]] && [[ -z "$TASK_TYPE" ]]; then TASK_TYPE="generation"; fi
   if [[ "$IS_QA" -gt 0 ]] && [[ -z "$TASK_TYPE" ]]; then TASK_TYPE="qa"; fi
 fi
@@ -62,16 +68,35 @@ fi
 # ── Nothing to pre-compute ──
 if [[ -z "$TASK_TYPE" ]]; then exit 0; fi
 
-# ── Pre-compute via misarcoder_stream.sh (MisarCoder free MoE) ──
+# ── Warm-state guard: skip blocking pre-compute if MisarCoder is cold ──
 SCRIPTS_DIR="$(dirname "$0")/../scripts"
+WARM_FLAG="/tmp/.misarcoder_warm"
+WARM_AGE=$(( $(date +%s) - $(cat "$WARM_FLAG" 2>/dev/null || echo 0) ))
+if [[ "$WARM_AGE" -gt 300 ]]; then
+  # Cold — trigger async re-warm, let Claude handle this prompt without blocking
+  bash "$SCRIPTS_DIR/misarcoder_stream.sh" general "Be helpful." "warm" 3 > /dev/null 2>&1 &
+  exit 0
+fi
+
+# ── Pre-compute: docs → assisters-chat-v1 (WritingSkill), rest → MisarCoder MoE ──
 ANSWER_FILE=$(mktemp)
 
-bash "$SCRIPTS_DIR/misarcoder_stream.sh" "$TASK_TYPE" "You are a helpful, concise assistant." "$PROMPT" 4096 > "$ANSWER_FILE" 2>/dev/null
+if [[ "$TASK_TYPE" == "docs" ]] || \
+   ( [[ "$TASK_TYPE" == "generation" ]] && [[ "${WORD_COUNT:-0}" -gt 80 ]] ); then
+  # Long-form → assisters-chat-v1 REST API via WritingSkill adaptor (free, no Claude credits)
+  bash "$SCRIPTS_DIR/ai-write.sh" "$PROMPT" 4096 > "$ANSWER_FILE" 2>/dev/null
+else
+  # Short/QA/general/commit/PR → MisarCoder REST SSE (groq/gemini free MoE)
+  bash "$SCRIPTS_DIR/misarcoder_stream.sh" \
+    "$TASK_TYPE" "You are a helpful, concise assistant." "$PROMPT" 4096 \
+    > "$ANSWER_FILE" 2>/dev/null
+fi
+
 ANSWER_SIZE=$(wc -c < "$ANSWER_FILE" 2>/dev/null | tr -d ' ')
 
 if [[ -z "$ANSWER_SIZE" ]] || [[ "$ANSWER_SIZE" -lt 30 ]]; then
   rm -f "$ANSWER_FILE"
-  # MisarCoder unavailable — let Claude subscription handle it silently
+  # MisarCoder/assisters unavailable — let Claude subscription handle it silently
   exit 0
 fi
 

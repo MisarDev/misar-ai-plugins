@@ -18,5 +18,21 @@
       "GUARDIAN_TIMEOUT": "120",
       "SEMGREP_BIN": "semgrep"
     }
+  },
+  "misarblog": {
+    "command": "python3",
+    "args": ["${HOME}/.claude/scripts/misarblog-mcp.py"],
+    "env": {
+      "MISARBLOG_API_KEY": "${MISARBLOG_API_KEY}",
+      "MISARBLOG_BASE_URL": "${MISARBLOG_BASE_URL}"
+    }
+  },
+  "misarblog-ts": {
+    "command": "node",
+    "args": ["${HOME}/Desktop/G1 Technologies/Misar AI/MisarBlog/packages/mcp-server/dist/index.js"],
+    "env": {
+      "MISARBLOG_API_KEY": "${MISARBLOG_API_KEY}",
+      "MISARBLOG_BASE_URL": "${MISARBLOG_BASE_URL}"
+    }
   }
 }
