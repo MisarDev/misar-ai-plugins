@@ -12,18 +12,6 @@
         ]
       }
     ],
-    "UserPromptSubmit": [
-      {
-        "matcher": "*",
-        "hooks": [
-          {
-            "type": "prompt",
-            "prompt": "Analyze the user's prompt to determine if it is requesting a website audit or web quality check.\n\nAudit-related prompts include requests to:\n- Audit, review, check, scan, analyze, or test a website/page/URL\n- Check SEO, accessibility, performance, security, mobile responsiveness, compliance\n- Review WCAG, Core Web Vitals, CSP, GDPR, CCPA, cookie consent\n- Find broken links, check meta tags, test responsiveness\n- Evaluate web standards, best practices, or quality\n- Phrases like 'audit my site', 'check this URL', 'how is my SEO', 'is my site accessible', 'security scan'\n\nNON-audit prompts (do NOT trigger):\n- General coding tasks (build a feature, fix a bug, refactor code)\n- Questions about how something works\n- File editing, git operations, deployment\n- Any task not specifically about evaluating/auditing web quality\n\nIf the prompt IS an audit request:\n1. Identify which categories are relevant: SEO, Accessibility, Performance, Security, Mobile, Content, Compliance — or ALL if generic\n2. Identify the target: URL if provided, otherwise 'codebase'\n3. Respond with: 'Launch the website-auditor agent to run [categories] audit on [target]. Use [Deep/Quick/Source-Only] mode.'\n\nIf the prompt is NOT an audit request:\nReturn nothing (empty response). Do NOT interfere with non-audit work.\n\nBe strict — only trigger for explicit audit/review/check requests. Never trigger for general development tasks.",
-            "timeout": 10
-          }
-        ]
-      }
-    ],
     "Stop": [
       {
         "matcher": ".*",
@@ -35,11 +23,11 @@
         ]
       },
       {
-        "matcher": "*.html,*.tsx,*.jsx,*.vue,*.svelte,*.astro,*.css",
+        "matcher": ".*\\.(html|tsx|jsx|vue|svelte|astro|css|ts|js)$",
         "hooks": [
           {
             "type": "prompt",
-            "prompt": "Quick web standards check on the changes made:\n\n- SEO: Meta tags present? Semantic HTML? Image alt text?\n- Accessibility: ARIA labels? Contrast? Focus indicators? Touch targets 44px+?\n- Security: No hardcoded secrets? Inputs sanitized? External links rel='noopener noreferrer'?\n- Performance: Images lazy loaded? No blocking scripts? Dynamic imports?\n\nIf all good, return 'approve'. If issues, return 'block' with findings.\nFormat: **Web Audit Summary** — severity (Critical/Warning/Info).",
+            "prompt": "Quick web standards check on the changes made.\n\nFIRST: Check what files were changed. If ALL changed files are documentation or configuration files (.md, .json, .yaml, .yml, .txt, .env, .toml, .lock) with NO .html, .tsx, .jsx, .ts, .js, .css, .vue, .svelte, or .astro files changed, return ONLY the word 'approve' and nothing else.\n\nIf code/markup files WERE changed, run these checks:\n- SEO: Meta tags present? Semantic HTML? Image alt text?\n- Accessibility: ARIA labels? Contrast? Focus indicators? Touch targets 44px+?\n- Security: No hardcoded secrets? Inputs sanitized? External links rel='noopener noreferrer'?\n- Performance: Images lazy loaded? No blocking scripts? Dynamic imports?\n\nIf all good, return 'approve'. If issues, return 'block' with findings.\nFormat: **Web Audit Summary** — severity (Critical/Warning/Info).",
             "timeout": 30
           }
         ]
