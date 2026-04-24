@@ -12,6 +12,17 @@
         ]
       }
     ],
+    "UserPromptSubmit": [
+      {
+        "matcher": ".*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "${CLAUDE_PLUGIN_ROOT}/hooks-handlers/generation-detector.sh"
+          }
+        ]
+      }
+    ],
     "Stop": [
       {
         "matcher": ".*",
