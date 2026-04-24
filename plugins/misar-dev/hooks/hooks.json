@@ -32,16 +32,6 @@
             "command": "${CLAUDE_PLUGIN_ROOT}/hooks-handlers/stop-git-manager.sh"
           }
         ]
-      },
-      {
-        "matcher": ".*\\.(html|tsx|jsx|vue|svelte|astro|css|ts|js)$",
-        "hooks": [
-          {
-            "type": "prompt",
-            "prompt": "Quick web standards check on the changes made.\n\nFIRST: Check what files were changed. If ALL changed files are documentation or configuration files (.md, .json, .yaml, .yml, .txt, .env, .toml, .lock) with NO .html, .tsx, .jsx, .ts, .js, .css, .vue, .svelte, or .astro files changed, return ONLY the word 'approve' and nothing else.\n\nIf code/markup files WERE changed, run these checks:\n- SEO: Meta tags present? Semantic HTML? Image alt text?\n- Accessibility: ARIA labels? Contrast? Focus indicators? Touch targets 44px+?\n- Security: No hardcoded secrets? Inputs sanitized? External links rel='noopener noreferrer'?\n- Performance: Images lazy loaded? No blocking scripts? Dynamic imports?\n\nIf all good, return 'approve'. If issues, return 'block' with findings.\nFormat: **Web Audit Summary** — severity (Critical/Warning/Info).",
-            "timeout": 30
-          }
-        ]
       }
     ]
   }
