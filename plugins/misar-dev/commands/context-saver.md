@@ -1,15 +1,17 @@
 ---
 allowed-tools: ["Bash", "Glob", "Grep", "Read", "Write", "Edit", "Agent"]
-description: "3D Router — auto-switches between model (opus/sonnet/haiku) x effort (low/med/high/max) x version (4.5/4.6) based on task complexity and token budget."
+description: "Credit Maximizer v8.2.0 — mandatory MisarCoder-first offload + 3D Router. Reduces Claude credits 75-85% by routing generation/docs/Q&A to free MoE (gemini-2.5-flash/groq)."
 argument-hint: "[status|setup|config|reset]"
 ---
 
-Run the Context Saver 3D router (model x effort x version).
+Run the Context Saver Credit Maximizer (v8.2.0).
 
 **Arguments:**
-- `status` (default) — Show current routing state and token usage
+- `status` (default) — Show current routing state, token usage, and MisarCoder availability
 - `setup` — Install advanced router scripts to ~/.claude/router/
-- `config` — Show routing configuration and model assignments
+- `config` — Show routing configuration and offload table
 - `reset` — Reset session tracking and model state
 
-**Auto-Enabled:** The routing protocol is automatically active via SessionStart hook when the misar-dev plugin is installed. This command provides manual control and visibility.
+**Auto-Enabled:** The mandatory MisarCoder-first protocol + 3D routing is automatically active via SessionStart hook when misar-dev is installed. This command provides manual control and visibility.
+
+**Key feature (v8.2.0):** Before generating ANY output, Claude checks the offload table. Commit messages, PR descriptions, changelogs, README sections, blog posts, email copy, code explanations, and simple Q&A are all routed to MisarCoder (free, gemini-2.5-flash) FIRST. Long-form content (>500w) uses the Assisters API (assisters-chat-v1).

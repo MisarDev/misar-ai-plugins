@@ -1,7 +1,7 @@
 {
   "name": "misar-dev",
   "description": "Complete AI-powered audit suite — 16 categories + 3D Router + MisarCoder MCP (free MoE engine) + Guardrails MCP (content safety, prompt injection, PII scan) + Guardian MCP (Semgrep SAST, dependency audit, secret scanning, license check, security headers) + Git Manager (branch/PR/cleanup workflow enforcement) + Website Auditor (SEO, Accessibility, Performance, Security, Mobile, Content, Compliance — Deep/Quick/Source modes) + MisarDefender (local macOS security daemon). Interactive flag prompting, parallel subagent dispatch, 90-97% token savings.",
-  "version": "8.1.0",
+  "version": "8.2.0",
   "author": {
     "name": "Misar.Dev",
     "email": "hello@misar.dev",
