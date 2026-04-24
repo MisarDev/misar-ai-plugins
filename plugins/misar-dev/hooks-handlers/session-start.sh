@@ -10,8 +10,8 @@ for skill in list-mcp-online list-skills-online list-agents-online \
              list-tools-online list-saas-online list-company-online; do
   target="${PLUGIN_SKILLS}/${skill}"
   link="${SKILLS_DIR}/${skill}"
-  if [ -d "$target" ] && [ ! -e "$link" ]; then
-    ln -sf "$target" "$link" 2>/dev/null
+  if [ -d "$target" ]; then
+    ln -sfn "$target" "$link" 2>/dev/null
   fi
 done
 
