@@ -1,5 +1,7 @@
-# Context Saver — 3D Router Configuration (v7.0.0)
-# Dimensions: Model × Effort × Version
+# Context Saver — 4D Router Configuration (v8.3.0)
+# Dimensions: Model × Effort × Version × Context Window
+# Models: haiku 4.5 (200K) · sonnet 4.6 (200K | 1M) · opus 4.7 (200K | 1M)
+# Providers: claude (default) · misarcoder (free MoE) · assisters (free WritingSkill)
 
 # ─── Model selection based on task complexity ───
 model_routing:
@@ -45,27 +47,87 @@ effort_routing:
                 'complete analysis', '49 frameworks']
     - token_estimate: '>15000'
 
-# ─── Version routing (NEW in v7.0.0) ───
+# ─── Version routing (v8.3.0 — opus upgraded to 4.7) ───
 version_routing:
   '4.5':
     models: ['haiku']
     model_ids: ['claude-haiku-4-5-20251001']
-    reason: 'Cheapest available for lightweight tasks'
+    reason: 'Cheapest available for lightweight tasks (200K context)'
   '4.6':
-    models: ['sonnet', 'opus']
-    model_ids: ['claude-sonnet-4-6', 'claude-opus-4-6']
-    reason: 'Latest gen for code accuracy and complex reasoning'
+    models: ['sonnet']
+    model_ids: ['claude-sonnet-4-6']
+    reason: 'Latest sonnet for code accuracy (200K context)'
+  '4.7':
+    models: ['opus']
+    model_ids: ['claude-opus-4-7']
+    reason: 'Latest opus for complex reasoning (200K context)'
+
+# ─── 1M context-window variants (v8.3.0) ───
+# Used for full-suite audits, monorepos, cross-repo migrations, transcripts >150K tokens.
+# Cost: ~2x standard 200K rate — only triggered when codebase scope clearly exceeds 200K.
+context_1m:
+  enabled: true
+  variants:
+    sonnet_1m: 'claude-sonnet-4-6[1m]'
+    opus_1m: 'claude-opus-4-7[1m]'
+  triggers:
+    patterns:
+      - 'full-suite'
+      - 'full audit'
+      - 'audit all'
+      - 'monorepo'
+      - 'entire codebase'
+      - 'whole codebase'
+      - 'across all files'
+      - 'compliance audit'
+      - '49 frameworks'
+      - 'multi-repo'
+      - 'cross-repo'
+      - '--1m'
+    transcript_token_threshold: 150000   # auto-promote to 1M when transcript exceeds this
+
+# ─── External-provider offload (route OUT of Claude entirely) ───
+# These tasks should NEVER consume Claude credits — push to free MoE / WritingSkill.
+external_providers:
+  misarcoder:
+    endpoint: 'http://localhost:8000'
+    model: 'gemini-2.5-flash'
+    fallback_model: 'groq/llama-3.3-70b-versatile'
+    handles:
+      - 'commit message'
+      - 'pr description'
+      - 'changelog'
+      - 'release notes'
+      - 'readme section'
+      - 'api docs'
+      - 'code explanation'
+      - 'simple q&a'
+      - 'file summary'
+  assisters:
+    endpoint: 'https://assisters.dev/api/v1'
+    model: 'assisters-chat-v1'
+    handles:
+      - 'blog post'
+      - 'long-form article'
+      - 'tutorial'
+      - 'newsletter'
+      - 'email campaign'
+      - 'marketing copy'
+      - 'documentation site content'
+      - 'landing page copy'
 
 # ─── Misar-dev slash command → 3D routing (replaces misar_dev_commands) ───
 misar_dev_commands:
   '/misar-dev:full-suite':
     model: opus
     effort: max
-    version: '4.6'
+    version: '4.7'
+    context_1m: true
   '/misar-dev:compliance':
     model: opus
     effort: max
-    version: '4.6'
+    version: '4.7'
+    context_1m: true
   '/misar-dev:security':
     model: sonnet
     effort: high
@@ -111,13 +173,14 @@ misar_dev_commands:
 misar_dev_agent_models:
   opus_max:
     effort: max
-    version: '4.6'
+    version: '4.7'
+    context_1m: true
     agents:
       - orchestrator-agents
       - compliance-agents
   opus_high:
     effort: high
-    version: '4.6'
+    version: '4.7'
     agents: []
   sonnet_high:
     effort: high
