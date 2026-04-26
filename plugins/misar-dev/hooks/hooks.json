@@ -1,5 +1,5 @@
 {
-  "description": "Misar Dev — context-saver auto-routing + git workflow enforcement + website audit auto-detection.",
+  "description": "Misar Dev — context-saver auto-routing + git workflow enforcement + website audit auto-detection + secret protection pre-commit hook.",
   "hooks": {
     "SessionStart": [
       {
@@ -8,6 +8,17 @@
           {
             "type": "command",
             "command": "${CLAUDE_PLUGIN_ROOT}/hooks-handlers/session-start.sh"
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "${CLAUDE_PLUGIN_ROOT}/hooks-handlers/pre-commit-secret-check.sh"
           }
         ]
       }

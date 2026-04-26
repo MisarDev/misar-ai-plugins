@@ -17,12 +17,34 @@ Model: `assisters-chat-v1` | Banned: `OPENAI_API_KEY`, `ANTHROPIC_API_KEY`, `GOO
 - **guardian** — Semgrep SAST, CVE audit, secret scanning, license check
 
 ## Code Standards
+
 - TypeScript strict — no `as any`; fix the root type
 - Supabase: `.maybeSingle()` not `.single()`, add tables to `database.ts`
 - Zod validation on all POST route inputs
 - Conventional commits: `feat|fix|chore|docs|refactor|perf|test(<scope>): <description>`
 - No speculative abstractions, no impossible error handling
-- Security: CSRF protection, never commit secrets, validate all user inputs
+- Security: CSRF protection, validate all user inputs
+
+## Secret Security — ZERO TOLERANCE
+
+**NEVER store credentials, tokens, API keys, passwords, connection strings, private keys,
+or any sensitive value in any repo file, folder, commit, PR description, code comment,
+log output, or CLI argument. No exceptions. No workarounds. Ever.**
+
+| Allowed | Forbidden |
+|---------|-----------|
+| `.env`, `.env.local`, `.env.production`, `.infra.secrets` (gitignored) | Any `.ts`, `.js`, `.json`, `.yaml`, `.md`, config file, or tracked file |
+| `.env.example` with placeholder values only | `.env.example` with real values |
+
+**Rules:**
+
+1. Secrets live only in gitignored `.env*` files — never in tracked files.
+2. `.env.example` uses placeholders: `API_KEY=your_api_key_here`.
+3. No secrets in commit messages, PR titles, PR bodies, or code comments.
+4. No secrets as CLI arguments — use `$ENV_VAR` references instead.
+5. No secrets in test files, fixtures, or seed data.
+6. Run `gitleaks protect --staged` or `guardian_secret_scan` before every `git push`.
+7. If a secret enters git history: rotate the credential immediately, purge with `git filter-repo`, force-push.
 
 ## Infrastructure
 - Git: Forgejo (not GitHub) — `git.misar.io`

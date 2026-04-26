@@ -39,7 +39,39 @@ Install via `bash scripts/install.sh` or copy `adapters/mcp.json` to your agent'
 - TypeScript strict, no `as any`. Supabase `.maybeSingle()` not `.single()`.
 - Zod validation on all API route inputs.
 - Git: `<type>(<scope>): <description>` conventional commits.
-- Security: validate all inputs, CSRF protection, never commit secrets.
+- Security: validate all inputs, CSRF protection.
+
+## Secret & Credential Security Policy — ZERO TOLERANCE
+
+**NEVER store credentials, tokens, API keys, passwords, connection strings, private keys,
+or any sensitive value in any repo file, folder, commit, PR description, code comment,
+log output, or CLI argument. No exceptions. No workarounds. Ever.**
+
+| Allowed storage | Description |
+|---|---|
+| `.env` / `.env.local` / `.env.production` | Runtime secrets — gitignored, never committed |
+| `.infra.secrets` | Infrastructure secrets — gitignored, never committed |
+| `.env.example` | **Placeholder keys only** — safe to commit, never real values |
+
+### Rules every agent must follow
+
+1. **Secrets in `.env*` only.** If it's not gitignored, it's wrong.
+2. **`.env.example` gets placeholder values** (`API_KEY=your_api_key_here`), never real values.
+3. **No secrets in commit messages, PR bodies, comments, or documentation** — git history is permanent.
+4. **No secrets as CLI arguments** — use `$ENV_VAR` references; raw values appear in `ps aux` and CI logs.
+5. **No secrets in test files, fixtures, or seed data** — use mock/fake values.
+6. **Run `guardian_secret_scan` before every push.** Block on any finding.
+7. **If a secret touches git history: rotate the credential immediately**, then purge with `git filter-repo` and force-push.
+
+### Pre-push secret scan (mandatory)
+
+```bash
+# Guardian MCP (preferred)
+guardian_secret_scan --path .
+
+# gitleaks fallback
+gitleaks protect --staged
+```
 
 ## Infrastructure (Misar AI projects)
 - Git: Forgejo `git.misar.io` — NEVER GitHub

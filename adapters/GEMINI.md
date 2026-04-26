@@ -34,7 +34,32 @@ Add to your Gemini CLI config (`~/.gemini/config.json`):
 - `check compliance against GDPR` → compliance audit
 
 ## AI API Rule
+
 Always use `assisters.dev` gateway, never raw OpenAI/Anthropic/Google SDKs.
 
 ## Code Quality
-TypeScript strict · Zod validation · conventional commits · no hardcoded secrets.
+
+TypeScript strict · Zod validation · conventional commits.
+
+## Secret Security — ZERO TOLERANCE
+
+**NEVER store credentials, tokens, API keys, passwords, connection strings, private keys,
+or any other sensitive value in any repo file, folder, commit, PR description, code comment,
+log output, or CLI argument. No exceptions. Ever.**
+
+### Where secrets live
+
+| File | Rule |
+|------|------|
+| `.env` / `.env.local` / `.env.production` / `.infra.secrets` | Only allowed location — must be gitignored |
+| `.env.example` | Placeholder keys only (`KEY=your_value_here`) — safe to commit |
+| Any other file | **FORBIDDEN** — blocked by pre-commit hook |
+
+### Hard rules
+
+1. Secrets in `.env*` only — if the file is tracked by git, it's wrong.
+2. No secrets in commit messages, PR bodies, comments, or docs — git history is permanent.
+3. No secrets as CLI arguments — use `$ENV_VAR` references to avoid exposure in `ps aux`/CI logs.
+4. No secrets in test fixtures or seed data — use mock/fake values.
+5. Run `guardian_secret_scan` or `gitleaks protect --staged` before every push.
+6. If a secret touches git history: **rotate immediately**, then purge with `git filter-repo`.
