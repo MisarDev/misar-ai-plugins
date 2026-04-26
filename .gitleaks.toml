@@ -1,0 +1,23 @@
+title = "misar-ai-plugins gitleaks config"
+
+[allowlist]
+  description = "Global allowlist"
+  regexes = [
+    '''REDACTED_FORGEJO_TOKEN''',
+    '''\$\{FORGEJO_TOKEN\}''',
+    '''\$\{env\b''',
+    '''your-api-key''',
+    '''placeholder''',
+  ]
+
+[[rules]]
+  description = "Forgejo/Gitea 40-char hex token"
+  regex = '''\b[0-9a-f]{40}\b'''
+  tags = ["key", "forgejo", "gitea"]
+  [rules.allowlist]
+    regexes = ['''[0-9a-f]{40}.*commit|commit.*[0-9a-f]{40}''']
+
+[[rules]]
+  description = "Generic API key assignment"
+  regex = '''(?i)(api_key|apikey|access_token|auth_token|secret_key)\s*[=:]\s*["'][A-Za-z0-9_\-\.]{16,}["']'''
+  tags = ["key", "generic"]

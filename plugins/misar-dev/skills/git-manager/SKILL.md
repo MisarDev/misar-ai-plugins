@@ -92,7 +92,7 @@ This skill is the single source of truth for all git operations in G1 / Misar AI
 ## Forgejo API Quick-Reference
 
 ```bash
-TOKEN="REDACTED_FORGEJO_TOKEN"  # claude-permanent-2026
+TOKEN="${FORGEJO_TOKEN}"  # store in ~/.zshrc or macOS Keychain — never hardcode
 BASE="https://git.misar.io/api/v1/repos/misaradmin/<repo>"
 
 # Open PR to develop
