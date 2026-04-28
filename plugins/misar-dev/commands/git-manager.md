@@ -1,7 +1,7 @@
 ---
 allowed-tools: ["Bash", "Read", "Grep"]
-description: "Git branch and PR workflow manager for G1 / Misar AI repos. Enforces canonical 10-step flow: branch from develop → commit → PR → merge → cleanup → release → preview → PR to main (UI only) → tag → cleanup."
-argument-hint: "[start|pr|release|cleanup|tag]"
+description: "Git branch and PR workflow manager for G1 / Misar AI repos. Enforces canonical flow: branch from develop → commit → PR → merge → cleanup → release → preview → develop→main PR (CI auto-merges) → tag → cleanup. Also handles multi-repo sweeps."
+argument-hint: "[start|pr|release|cleanup|tag|sweep]"
 ---
 
 # Git Manager
@@ -17,7 +17,8 @@ Invoke the **git-manager** skill to enforce the canonical branch/PR/merge/cleanu
 | `release` | Guide cutting `release/vX.Y.Z` from `develop` + preview deploy |
 | `cleanup` | Guide deleting merged short-lived or release branches (remote + local) |
 | `tag` | Guide tagging the release and cleaning up the release branch |
-| _(none)_ | Show the full 10-step workflow reference |
+| `sweep` | Multi-repo sweep: merge open feature PRs → develop, delete merged branches, open develop→main PR for each of the 7 G1 / Misar AI repos. **Use Forgejo API only** (local git can deadlock on concurrent fetches). |
+| _(none)_ | Show the full workflow reference |
 
 ## Secret Scan — Mandatory Pre-Commit/Pre-Push Check
 
